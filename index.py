@@ -114,8 +114,8 @@ $('#graph').cytoscape({
     .selector('edge')
       .css({
         'width': 'mapData(0, 0, 10, 5, 9)',
-        'line-color': '#2780E3',
-        'target-arrow-color': '#2780E3',
+        'line-color': 'data(color)',
+        'target-arrow-color': 'data(color)',
         'target-arrow-shape': 'triangle',
         'opacity': 0.5
       }),
