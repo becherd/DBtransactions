@@ -169,4 +169,5 @@ try:
 	history = str(form['history'].value)
 	print html(history) + printResults(history) + htmlend
 except KeyError:
-    	print html("")+htmlend
+	history = DBtransactions.generateHistory()
+    	print html(history)+htmlend

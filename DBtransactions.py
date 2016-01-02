@@ -4,7 +4,8 @@
 
 import string
 import re
-
+import random
+import views
 
 READ="r"
 WRITE="w"
@@ -16,12 +17,58 @@ class HistoryItem:
 		self.transaction = transaction
 		self.operation = operation
 		self.data=data
-	def toString(self):
+	def toString(self, html=True):
 		if self.data != "":
 			data = "["+self.data+"]"
 		else:
 			data = ""
-		return self.operation+"<sub>"+self.transaction+"</sub>"+data
+		if html:
+			transaction = "<sub>"+self.transaction+"</sub>"
+		else:
+			transaction = self.transaction
+		return self.operation+transaction+data
+
+
+
+def generateHistory():
+	numberOfTransactions = random.randint(2,4)
+	numberOfDataItems = numberOfTransactions - random.randint(0,1)
+	numberOfOperations = numberOfTransactions*random.randint(0,2)+random.randint(2,3)
+	history = []
+	usedTransactions = set()
+	for i in range(numberOfOperations):
+		item = generateRandomHistoryItem(numberOfTransactions, numberOfDataItems)
+		history.append(item)
+		usedTransactions.add(item.transaction)
+	#make sure all transactions make at least one operation
+	while len(usedTransactions) != numberOfTransactions:
+		item = generateRandomHistoryItem(numberOfTransactions, numberOfDataItems)
+		if item.transaction not in usedTransactions:
+			history.append(item)
+			usedTransactions.add(item.transaction)
+	#add commits/aborts
+	for t in usedTransactions:
+		for i, e in enumerate(reversed(history)):
+			if e.transaction == t:
+				indexForCommit = random.randint(len(history)-i, len(history))
+				commitOrAbort = random.randint(0,100)
+				if commitOrAbort > 80:
+					operation = ABORT
+				else:
+					operation = COMMIT
+				item = HistoryItem(t,operation,"")
+				history.insert(indexForCommit, item)
+				break
+	return views.historyToString(history, False)
+
+def generateRandomHistoryItem(numberOfTransactions, numberOfDataItems):
+	operations = [READ,WRITE]
+	dataItems = ["x", "y","z","w"]
+	transaction = str(random.randint(1,numberOfTransactions))
+	dataItem = dataItems[random.randint(0,numberOfDataItems-1)]
+	operation = operations[random.randint(0,1)]
+	item = HistoryItem(transaction, operation, dataItem)
+	return item
 
 
 def parseInput(string):
@@ -131,7 +178,7 @@ def isST(history):
 			for j,e2 in enumerate(history[i:]):
 				if (e2.operation == READ or e2.operation == WRITE) and e2.transaction != e.transaction and e2.data==e.data:
 					commitAbortFound = False
-					for c in history[i:j]:
+					for c in history[i:i+j]:
 						if (c.operation==COMMIT or c.operation == ABORT) and c.transaction == e.transaction:
 							#commit/abort before operation -> ok
 							commitAbortFound=True
@@ -212,7 +259,6 @@ def cycle_exists(G):                     # - G is a directed graph
             break
     return found_cycle[0]
  
-#-------
  
 def dfs_visit(G, u, color, found_cycle):
     if found_cycle[0]:                          # - Stop dfs if cycle is found.
@@ -225,3 +271,9 @@ def dfs_visit(G, u, color, found_cycle):
         if color[v] == "white":                 # - Call dfs_visit recursively.   
             dfs_visit(G, v, color, found_cycle)
     color[u] = "black"                          # - Mark node as done.
+
+
+##--------------------------------------
+
+
+

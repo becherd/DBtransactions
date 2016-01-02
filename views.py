@@ -33,10 +33,12 @@ def htmlGraph():
 	return wrapInPanel("Serialisierbarkeitsgraph SG(H)",  graphstring, 1)
 
 
-def historyToString(history):
+def historyToString(history, html=True):
         historyString = ""
-        for e in history:
-                historyString = historyString + e.toString()
+        for i,e in enumerate(history):
+                historyString = historyString + e.toString(html)
+		if i < len(history)-1:
+			historyString = historyString + ","
         return historyString
 
 
