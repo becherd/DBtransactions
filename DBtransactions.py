@@ -263,7 +263,7 @@ def findCycle(graph):
 	for u in graph:
 		nodesInCycle = [u]
 		found = visitNodes(graph, u, nodesInCycle)
-		if found:
+		if found: 
 			return nodesInCycle
 	return []
 
@@ -275,4 +275,6 @@ def visitNodes(graph, u, nodesInCycle):
 		found = visitNodes(graph, v, nodesInCycle)
 		if found:
 			return True
+		else:
+			del nodesInCycle[-1]
 	return False
