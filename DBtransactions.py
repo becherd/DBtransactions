@@ -278,10 +278,9 @@ def findCycle(graph):
 	return []
 
 def visitNodes(graph, u, nodesInCycle):
-	print nodesInCycle
-	if nodesInCycle.count(u) >1: #and nodesInCycle[0]==nodesInCycle[-1]:
-		i = nodesInCycle.index(u)
-		del nodesInCycle[:i]
+	if nodesInCycle.count(u) >1: 
+		firstU = nodesInCycle.index(u)
+		del nodesInCycle[:firstU]
 		return True
 	for v in graph[u]:
 		nodesInCycle.append(v)
