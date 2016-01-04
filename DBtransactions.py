@@ -188,18 +188,28 @@ def isST(history):
 	return True
 
 
-def findConflictOperations(history, transactions):
-	conflictTAs = set()
+def findConflictOperations(history):
+	conflictOperations = set()
 	for i,e in enumerate(history):
 		for j,e2 in enumerate(history):
-			if e.transaction != e2.transaction and e.transaction in transactions and e2.transaction in transactions and i<j and not (e.operation == READ and e2.operation==READ) and e.data==e2.data and not e.data == "":
-				conflictTAs.add((e.transaction, e2.transaction))
+			if e.transaction != e2.transaction and i<j and not (e.operation == READ and e2.operation==READ) and e.data==e2.data and not e.data == "":
+				conflictOperations.add((e, e2))
+	return conflictOperations
+
+def findConflictTransactions(history, transactions):
+	conflictOperations = findConflictOperations(history)
+	conflictTAs = set()
+	for o in conflictOperations:
+		t1 = o[0].transaction
+		t2 = o[1].transaction
+		if t1 in transactions and t2 in transactions:
+			conflictTAs.add((t1,t2))
 	return conflictTAs
 
 def generateGraph(history):
 	transactions = committedTransactions(history)
 	graph = {}
-	conflictTransactions =  findConflictOperations(history, transactions)
+	conflictTransactions =  findConflictTransactions(history, transactions)
 	for t in transactions:
 		dest = []
 		for c in conflictTransactions:
@@ -210,7 +220,7 @@ def generateGraph(history):
 
 def computeEverything(history):
 	graph = generateGraph(history)
-	return (graph, isSR(graph), isRC(history), isACA(history), isST(history))
+	return {'conflictOperations': findConflictOperations(history), 'committedTAs': committedTransactions(history), 'abortedTAs': abortedTransactions(history), 'graph': graph, 'isSR': isSR(graph), 'isRC': isRC(history), 'isACA': isACA(history), 'isST': isST(history)}
 
 def nodesToJson(graph):
 	json = "nodes: ["
@@ -268,7 +278,10 @@ def findCycle(graph):
 	return []
 
 def visitNodes(graph, u, nodesInCycle):
-	if nodesInCycle.count(u) > 1:
+	print nodesInCycle
+	if nodesInCycle.count(u) >1: #and nodesInCycle[0]==nodesInCycle[-1]:
+		i = nodesInCycle.index(u)
+		del nodesInCycle[:i]
 		return True
 	for v in graph[u]:
 		nodesInCycle.append(v)

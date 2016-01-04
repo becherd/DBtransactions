@@ -57,6 +57,7 @@ def html(history):
 				</div>
 				<div class="form-group">
 						<button id="submitbutton" type="submit" class="btn btn-primary" value="send">Absenden</button>
+						<a href="index.py" class="btn btn-default">Neue Historie</a>
 				</div>			
 		</form>
 		</div>
@@ -149,12 +150,15 @@ def printResults(string):
                         historyString = views.historyToString(history)
 			historyTable = views.historyToTable(history)
                         result = DBtransactions.computeEverything(history)
-                        graph = result[0]
-                        isSR = result[1]
-                        isRC = result[2]
-                        isACA = result[3]
-                        isST = result[4]
-			returnString =  historyTable+views.htmlGraph()+"<div>"+views.wrapInPanel("Eigenschaften von H:="+historyString, views.propertyToString("serialisierbar", isSR)+views.propertyToString("rücksetzbar", isRC)+views.propertyToString("vermeidet kaskadierendes Rücksetzen", isACA)+views.propertyToString("strikt", isST), 1)+"</div>"+printjquery(graph)
+			conflictOperations = views.conflictOperationsToString(result['conflictOperations'])
+			committedTransactions = views.transactionListToString(result['committedTAs'])
+			abortedTransactions = views.transactionListToString(result['abortedTAs'])
+                        graph = result['graph']
+                        isSR = result['isSR']
+                        isRC = result['isRC']
+                        isACA = result['isACA']
+                        isST = result['isST']
+			returnString =  historyTable+views.wrapInPanel("Konfliktoperationen", conflictOperations,3)+views.wrapInPanel("Committete Transaktionen", committedTransactions, 3)+views.wrapInPanel("Abortete Transaktionen", abortedTransactions, 3)+views.htmlGraph()+"<div>"+views.wrapInPanel("Eigenschaften von H:="+historyString, views.propertyToString("serialisierbar", isSR)+views.propertyToString("rücksetzbar", isRC)+views.propertyToString("vermeidet kaskadierendes Rücksetzen", isACA)+views.propertyToString("strikt", isST), 1)+"</div>"+printjquery(graph)
                 else:
 			returnString = history
 		return returnString

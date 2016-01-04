@@ -42,13 +42,25 @@ def historyToString(history, html=True):
         return historyString
 
 
+def transactionToString(transaction):
+	return  "T<sub>"+transaction+"</sub>"
+
+def transactionListToString(transactions):
+	if not transactions:
+		return "-"
+	else:
+		transactionString = ""
+		for t in sorted(list(transactions)):
+			transactionString = transactionString + transactionToString(t) + "<br/>"
+		return transactionString
+
 def historyToTable(history):
 	transactions = sorted(list(DBtransactions.involvedTransactions(history)))
 	table = """<table class="table table-bordered table-striped table-hover " style="width: 100%;">
   		<thead>
     			<tr><th>#</th>"""
 	for t in transactions:
-		table = table + "<th>T<sub>"+t+"</sub></th>"
+		table = table + "<th>"+transactionToString(t)+"</th>"
 	table = table + "</thead><tbody>"
 	for step, e in enumerate(history):
 		table = table + "<tr><td>"+str(step)+"</td>"
@@ -61,3 +73,12 @@ def historyToTable(history):
 		table = table + "</tr>"
 	table = table + "</tbody></table>"
 	return wrapInPanel("Historie H", table, 1)
+
+def conflictOperationsToString(conflictOperations):
+	if not conflictOperations:
+		return "-"
+	else:
+		operationsString = ""
+		for o in conflictOperations:
+			operationsString = operationsString + o[0].toString() + " &lt; " + o[1].toString() + "<br/>"
+		return operationsString
