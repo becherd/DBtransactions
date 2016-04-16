@@ -151,6 +151,7 @@ def printResults(string):
 			historyTable = views.historyToTable(history)
                         result = DBtransactions.computeEverything(history)
 			conflictOperations = views.conflictOperationsToString(result['conflictOperations'])
+			readingTAs = views.readingTAsToString(result['readingTAs'])
 			committedTransactions = views.transactionListToString(result['committedTAs'])
 			abortedTransactions = views.transactionListToString(result['abortedTAs'])
                         graph = result['graph']
@@ -158,7 +159,7 @@ def printResults(string):
                         isRC = result['isRC']
                         isACA = result['isACA']
                         isST = result['isST']
-			returnString =  historyTable+views.wrapInPanel("Konfliktoperationen", conflictOperations,3)+views.wrapInPanel("Committete Transaktionen", committedTransactions, 3)+views.wrapInPanel("Abortete Transaktionen", abortedTransactions, 3)+views.htmlGraph()+"<div>"+views.wrapInPanel("Eigenschaften von H:="+historyString, views.propertyToString("serialisierbar", isSR)+views.propertyToString("rücksetzbar", isRC)+views.propertyToString("vermeidet kaskadierendes Rücksetzen", isACA)+views.propertyToString("strikt", isST), 1)+"</div>"+printjquery(graph)
+			returnString =  historyTable+views.wrapInPanel("Konfliktoperationen", conflictOperations,3)+views.wrapInPanel("Lesende TAs", readingTAs, 3)+views.wrapInPanel("Committete Transaktionen", committedTransactions, 3)+views.wrapInPanel("Abortete Transaktionen", abortedTransactions, 3)+views.htmlGraph()+"<div>"+views.wrapInPanel("Eigenschaften von H := "+historyString, views.propertyToString("serialisierbar", isSR)+views.propertyToString("rücksetzbar", isRC)+views.propertyToString("vermeidet kaskadierendes Rücksetzen", isACA)+views.propertyToString("strikt", isST), 12)+"</div>"+printjquery(graph)
                 else:
 			returnString = history
 		return returnString

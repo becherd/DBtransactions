@@ -52,7 +52,7 @@ def generateHistory():
 			if e.transaction == t:
 				indexForCommit = random.randint(len(history)-i, len(history))
 				commitOrAbort = random.randint(0,100)
-				if commitOrAbort > 80:
+				if commitOrAbort > 90:
 					operation = ABORT
 				else:
 					operation = COMMIT
@@ -220,7 +220,7 @@ def generateGraph(history):
 
 def computeEverything(history):
 	graph = generateGraph(history)
-	return {'conflictOperations': findConflictOperations(history), 'committedTAs': committedTransactions(history), 'abortedTAs': abortedTransactions(history), 'graph': graph, 'isSR': isSR(graph), 'isRC': isRC(history), 'isACA': isACA(history), 'isST': isST(history)}
+	return {'conflictOperations': findConflictOperations(history), 'committedTAs': committedTransactions(history), 'abortedTAs': abortedTransactions(history), 'readingTAs': iReadsFromj(history), 'graph': graph, 'isSR': isSR(graph), 'isRC': isRC(history), 'isACA': isACA(history), 'isST': isST(history)}
 
 def nodesToJson(graph):
 	json = "nodes: ["

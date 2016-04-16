@@ -4,16 +4,8 @@
 import DBtransactions
 
 
-def wrapInPanel(heading, content, numberOfColumns, panelType="primary"):
-	if numberOfColumns == 1:
-		x = 12
-	elif numberOfColumns == 2:
-		x = 6
-	elif numberOfColumns == 3:
-		x = 4
-	else:
-		x = 3
-	panelString = "<div class=\"col-xs-8 col-sm-6 col-md-"+str(x)+"\"><div class=\"panel panel-"+panelType+"\"><div class=\"panel-heading\"><h3 class=\"panel-title\">"+heading+"</h3></div><div class=\"panel-body\">"+content+"</div></div></div>"
+def wrapInPanel(heading, content, gridClass, panelType="primary"):
+	panelString = "<div class=\"col-xs-12 col-sm-12 col-md-"+str(gridClass)+"\"><div class=\"panel panel-"+panelType+"\"><div class=\"panel-heading\"><h3 class=\"panel-title\">"+heading+"</h3></div><div class=\"panel-body\">"+content+"</div></div></div>"
 	return panelString
 
 
@@ -30,7 +22,7 @@ def propertyToString(property, value):
 
 def htmlGraph():
 	graphstring =  """<div id="graph" style="height: 400px; width: 100%; left: 0; background-color: #EDF1FA; border-top: 1px solid #ccc;"></div><br/>"""
-	return wrapInPanel("Serialisierbarkeitsgraph SG(H)",  graphstring, 1)
+	return wrapInPanel("Serialisierbarkeitsgraph SG(H)",  graphstring, 12)
 
 
 def historyToString(history, html=True):
@@ -38,7 +30,7 @@ def historyToString(history, html=True):
         for i,e in enumerate(history):
                 historyString = historyString + e.toString(html)
 		if i < len(history)-1:
-			historyString = historyString + ","
+			historyString = historyString + ", "
         return historyString
 
 
@@ -72,7 +64,7 @@ def historyToTable(history):
 			table = table + "</td>"
 		table = table + "</tr>"
 	table = table + "</tbody></table>"
-	return wrapInPanel("Historie H", table, 1)
+	return wrapInPanel("Historie H", table, 12)
 
 def conflictOperationsToString(conflictOperations):
 	if not conflictOperations:
@@ -82,3 +74,12 @@ def conflictOperationsToString(conflictOperations):
 		for o in conflictOperations:
 			operationsString = operationsString + o[0].toString() + " &lt; " + o[1].toString() + "<br/>"
 		return operationsString
+
+def readingTAsToString(readingTAs):
+	if not readingTAs:
+		return "-"
+	else:
+		readingTAstring = ""
+		for ta in readingTAs:
+			readingTAstring = readingTAstring + transactionToString(ta[0].transaction) + " liest von " + transactionToString(ta[1].transaction) + "<br/>"
+		return readingTAstring
