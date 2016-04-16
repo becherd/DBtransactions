@@ -220,7 +220,7 @@ def generateGraph(history):
 
 def computeEverything(history):
 	graph = generateGraph(history)
-	return {'conflictOperations': findConflictOperations(history), 'committedTAs': committedTransactions(history), 'abortedTAs': abortedTransactions(history), 'readingTAs': iReadsFromj(history), 'graph': graph, 'isSR': isSR(graph), 'isRC': isRC(history), 'isACA': isACA(history), 'isST': isST(history)}
+	return {'conflictOperations': findConflictOperations(history), 'committedTAs': committedTransactions(history), 'abortedTAs': abortedTransactions(history), 'readingTAs': iReadsFromj(history), 'graph': graph, 'SR': isSR(graph), 'RC': isRC(history), 'ACA': isACA(history), 'ST': isST(history)}
 
 def nodesToJson(graph):
 	json = "nodes: ["
