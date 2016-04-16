@@ -182,40 +182,49 @@ def printCheckboxes(checked={}):
 
 	for k,v in checked.iteritems():
 		if v:
-			checkedStrings[k] = "checked"
+			checkedStrings[k] = " checked"
 		else:
 			checkedStrings[k] = ""
 	
-	returnString = """ <div class="checkbox-inline">
-			                <label>
-                                                <input type="checkbox" name="SR" 
-"""+checkedStrings['SR'] +""">
-                                                SR
+	returnString = """ <div class="btn-group" data-toggle="buttons">
+			                <label id="SR">
+                                                <input type="checkbox" name="SR" autocomplete="off" 
+"""+checkedStrings['SR'] +"""/>
+                                                 <span></span>
                                         </label>
-                                </div>
-                                <div class="checkbox-inline">
-                                        <label>
-                                                <input type="checkbox" name="RC" 
-"""+checkedStrings['RC'] +""">
-                                                RC
+                                        <label id="RC">
+			                        <input type="checkbox" name="RC" autocomplete="off"
+"""+checkedStrings['RC'] +"""/>
+                                                 <span></span>
                                         </label>
-                                </div>
-                                <div class="checkbox-inline">
-                                        <label>
-                                                <input type="checkbox" name="ACA" 
-"""+checkedStrings['ACA'] +""">
-                                                ACA
+                                        <label id="ACA">
+                                                <input type="checkbox" name="ACA" autocomplete="off"
+"""+checkedStrings['ACA'] +"""/>
+                                                <span></span>
                                         </label>
-                                </div>
-                                <div class="checkbox-inline">
-                                        <label>
-                                                <input type="checkbox" name="ST" 
-"""+checkedStrings['ST'] +""">
-                                                ST
+                                        <label id="ST">
+                                                <input type="checkbox" name="ST" autocomplete="off"
+"""+checkedStrings['ST'] +"""/>
+                                                <span></span>
                                         </label>
                                 </div>
 			"""
 	returnString = returnString + """</form>
+		
+		<script>
+			$('label').on("change click", function () {
+        		var checked = $('input', this).is(':checked');
+       			if (checked){ 
+				$(this).removeClass().addClass("btn btn-success active");
+				$('span', this).html('<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>'+this.id);
+			}
+			else{
+				$(this).removeClass().addClass("btn btn-danger");
+				$('span', this).html('<span class="glyphicon glyphicon-flash" aria-hidden="true"></span>'+this.id);
+			}
+			}).change();
+		</script>
+
                 </div>
                 </div>
                 <br/>
