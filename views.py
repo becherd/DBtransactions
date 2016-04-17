@@ -9,6 +9,14 @@ def wrapInPanel(heading, content, gridClass, panelType="primary"):
 	return panelString
 
 
+def getMessageBox(message, icon="exclamation-sign"):
+		if icon=="thumbs-up":
+			style="success"
+		else:
+			style="danger"
+		return """<div class="panel-body"><div class="row"><div class="col-md-12"><div class="alert alert-"""+style+"""" role="alert"><span class="glyphicon glyphicon-"""+icon+"""" aria-hidden=""""+icon+""""></span><span class="sr-only">"""+style+"""</span> """+message+"""</div></div></div></div>"""
+
+
 def propertyToString(property, value):
 	if value:
 		labeltype = "success"
@@ -16,7 +24,6 @@ def propertyToString(property, value):
 	else:
 		labeltype = "danger"
 		icon = "flash"
-	#return """<h1><span class="label label-"""+labeltype+"""">"""+property+""" <span class="glyphicon glyphicon-"""+icon+"""" aria-hidden=""""+icon+""""></span></span></h1>"""
 	return """<h1><div class="alert alert-"""+labeltype+"""">"""+property+""" <span class="glyphicon glyphicon-"""+icon+"""" aria-hidden=""""+icon+""""></span></div></h1>"""
 
 

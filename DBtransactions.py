@@ -77,18 +77,21 @@ def parseInput(string):
 	history = []
 	for e in elements:
 		if len(e) == 2:
-			if re.match("[ac]\d",e):
+			#c or a
+			if re.match("^[ac]\d$",e):
 				history.append(HistoryItem(e[1],e[0]))
 			else:
-				return "verstehe "+e+" nicht"
+				return views.getMessageBox("Verstehe deine Eingabe "+e+" nicht!", "exclamation-sign")
 		elif len(e) == 5:
 			#w or r
-			if re.match("[wr]\d\[\w\]",e):
+			if re.match("^[wr]\d[\[\(][a-zA-Z][\]\)]$",e):
 				history.append(HistoryItem(e[1],e[0],e[3]))
 			else:
-				return "verstehe "+e+" nicht"
+				return views.getMessageBox("Verstehe deine Eingabe "+e+" nicht!", "exclamation-sign")
+		elif re.match("[ac]\d+$",e) or re.match("[wr]\d+[\[\(][a-zA-Z][\]\)]",e):
+			return views.getMessageBox("Bitte nur TA-IDs zwischen 0 und 9 verwenden!", "exclamation-sign")
 		else:
-			return "Kein gültiges Format"
+			return views.getMessageBox("Kein gültiges Format: "+e+"", "exclamation-sign")
 	validation = validateInput(history)
 	if validation[0]:
 		return history
@@ -119,10 +122,10 @@ def validateInput(history):
 			for e2 in history[i+1:]:
 				if e.transaction == e2.transaction:
 					#the transaction does something after abort/commit, which is invalid
-					return (False, "Operationen nach Commit/Abort!")
+					return (False, views.getMessageBox("Operationen nach Commit/Abort!", "exclamation-sign"))
 	if committedTransactions(history) | abortedTransactions(history) < involvedTransactions(history):
 		#there are transactions which do not commit/abort
-		return (False, "Es gibt TAs, die weder committen noch aborten")
+		return (False, views.getMessageBox("Es gibt TAs, die weder committen noch aborten!", "exclamation-sign"))
 	else:
 		return (True, "Alles ok") 
 

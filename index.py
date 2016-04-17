@@ -158,9 +158,9 @@ def printResults(string, answers={}):
 			resultString =  historyTable+views.wrapInPanel("Konfliktoperationen", conflictOperations,3)+views.wrapInPanel("Lesende TAs", readingTAs, 3)+views.wrapInPanel("Committete Transaktionen", committedTransactions, 3)+views.wrapInPanel("Abortete Transaktionen", abortedTransactions, 3)+views.htmlGraph()+"<div>"+views.wrapInPanel("Eigenschaften von H := "+historyString, views.propertyToString("serialisierbar", isSR)+views.propertyToString("rücksetzbar", isRC)+views.propertyToString("vermeidet kaskadierendes Rücksetzen", isACA)+views.propertyToString("strikt", isST), 12)+"</div>"+printjquery(graph)
                 	if answers:
 				if answers['SR'] == isSR and  answers['RC'] == isRC and  answers['ACA'] == isACA and  answers['ST'] == isST:
-					returnString = printCheckboxes(answers) + "Richtig!" + resultString
+					returnString = printCheckboxes(answers) + views.getMessageBox("Richtig!","thumbs-up") + resultString
 				else:
-					returnString = printCheckboxes(answers) + "Leider falsch!"
+					returnString = printCheckboxes(answers) + views.getMessageBox("Leider falsch!","thumbs-down")
 			else:
 				returnString = printCheckboxes(result) + resultString
 		else:
@@ -237,7 +237,6 @@ def printCheckboxes(checked={}):
 		</script>
                 </div>
                 </div>
-                <br/>
 		"""
 	return returnString
 
