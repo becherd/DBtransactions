@@ -56,8 +56,6 @@ def html(history):
 "></input>
 				</div>
 				<div class="form-group">
-						<button id="submitbutton" type="submit" class="btn btn-primary" value="send">Absenden</button>
-						 <button id="quizbutton" name="quizbutton" type="submit" class="btn btn-primary" value="true">Quiz</button>
 						<a href="index.py" class="btn btn-default">Neue Historie</a>
 				</div>
 		"""
@@ -186,45 +184,57 @@ def printCheckboxes(checked={}):
 		else:
 			checkedStrings[k] = ""
 	
-	returnString = """ <div class="btn-group" data-toggle="buttons">
-			                <label id="SR">
+	returnString = """ <br/><h4>Welche Eigenschaften erfüllt diese Historie?</h4>
+			 <div class="form-group">
+				<div id="toggleButtons" class="btn-group" data-toggle="buttons">
+			                <label id="SR" type="toggleButton">
                                                 <input type="checkbox" name="SR" autocomplete="off" 
 """+checkedStrings['SR'] +"""/>
                                                  <span></span>
                                         </label>
-                                        <label id="RC">
+                                        <label id="RC" type="toggleButton">
 			                        <input type="checkbox" name="RC" autocomplete="off"
 """+checkedStrings['RC'] +"""/>
                                                  <span></span>
                                         </label>
-                                        <label id="ACA">
+                                        <label id="ACA" type="toggleButton">
                                                 <input type="checkbox" name="ACA" autocomplete="off"
 """+checkedStrings['ACA'] +"""/>
                                                 <span></span>
                                         </label>
-                                        <label id="ST">
+                                        <label id="ST" type="toggleButton">
                                                 <input type="checkbox" name="ST" autocomplete="off"
 """+checkedStrings['ST'] +"""/>
                                                 <span></span>
                                         </label>
-                                </div>
-			"""
-	returnString = returnString + """</form>
+                        	</div>
+			 	<button id="quizbutton" name="quizbutton" type="submit" class="btn btn-primary" value="true">Überprüfen</button>
+                        </div>  
+			<div class="form-group">
+				<button id="submitbutton" type="submit" class="btn btn-default btn-sm" value="send">Ergebnis anzeigen</button>
+			  </div>
+			</div>
+			</form>
 		
 		<script>
-			$('label').on("change click", function () {
+			$('label[type="toggleButton"]').on("change click", function () {
         		var checked = $('input', this).is(':checked');
        			if (checked){ 
 				$(this).removeClass().addClass("btn btn-success active");
-				$('span', this).html('<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>'+this.id);
+				$('span', this).html('<span class="glyphicon glyphicon-ok" aria-hidden="true" onclick="return iconclicked('+this.id+');"></span>'+this.id);
 			}
 			else{
 				$(this).removeClass().addClass("btn btn-danger");
-				$('span', this).html('<span class="glyphicon glyphicon-flash" aria-hidden="true"></span>'+this.id);
+				$('span', this).html('<span class="glyphicon glyphicon-flash" aria-hidden="true" onclick="return iconclicked('+this.id+');"></span>'+this.id);
 			}
 			}).change();
 		</script>
 
+		<script>
+			function iconclicked(label){
+				$("#"+label.id).click();
+			};
+		</script>
                 </div>
                 </div>
                 <br/>
