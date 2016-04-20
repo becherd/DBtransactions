@@ -33,11 +33,12 @@ def booleanPropertyToString(property, isFilfilled, valueString=""):
 
 
 def propertyToString(property, history=[], operationsNotFulfillProperty=[]):
-	vl=""
+	infoString=""
 	if not operationsNotFulfillProperty:
 		propertyFulfilled=True
 	else:
 		propertyFulfilled=False
+		infoString = """<div class="list-group">"""
 		for v in operationsNotFulfillProperty:
 			conflictOperations = v[0]
 			endOperations = v[1]
@@ -46,10 +47,9 @@ def propertyToString(property, history=[], operationsNotFulfillProperty=[]):
 				markElements[c.index] = "danger"
 			for e in endOperations:
 				markElements[e.index] = "warning"
-
-			vl = vl+ historyToString(history, True, markElements)+"<br/>"
-
-	returnString = booleanPropertyToString(property, propertyFulfilled, vl)
+			infoString = infoString+ """<div class="list-group-item">""" + historyToString(history, True, markElements) + "</div>"
+		infoString = infoString + "</div>"
+	returnString = booleanPropertyToString(property, propertyFulfilled, infoString)
 	
 	return returnString
 

@@ -56,7 +56,7 @@ def html(history):
 "></input>
 				</div>
 				<div class="form-group">
-						<a href="index.py" class="btn btn-default">Neue Historie</a>
+						<a href="index.py" class="btn btn-default">Neue Historie generieren</a>
 				</div>
 		"""
 
@@ -158,7 +158,7 @@ def printResults(string, answers={}):
                         operationsNotST = result['operationsNotST']
 			isST = result['ST']
 			
-			resultString =  historyTable+views.wrapInPanel("Konfliktoperationen", conflictOperations,3)+views.wrapInPanel("Lesende TAs", readingTAs, 3)+views.wrapInPanel("Committete Transaktionen", committedTransactions, 3)+views.wrapInPanel("Abortete Transaktionen", abortedTransactions, 3)+views.htmlGraph()+"<div>"+views.wrapInPanel("Eigenschaften von H := "+historyString, views.booleanPropertyToString("serialisierbar", isSR)+views.propertyToString("rücksetzbar", history, operationsNotRC)+views.propertyToString("vermeidet kaskadierendes Rücksetzen", history, operationsNotACA)+views.propertyToString("strikt", history, operationsNotST), 12)+"</div>"+printjquery(graph)
+			resultString =  historyTable+views.wrapInPanel("Konfliktoperationen", conflictOperations,3)+views.wrapInPanel("Lesende Transaktionen", readingTAs, 3)+views.wrapInPanel("Committete Transaktionen", committedTransactions, 3)+views.wrapInPanel("Abortete Transaktionen", abortedTransactions, 3)+views.htmlGraph()+"<div>"+views.wrapInPanel("Eigenschaften von H := "+historyString, views.booleanPropertyToString("serialisierbar", isSR)+views.propertyToString("rücksetzbar", history, operationsNotRC)+views.propertyToString("vermeidet kaskadierendes Rücksetzen", history, operationsNotACA)+views.propertyToString("strikt", history, operationsNotST), 12)+"</div>"+printjquery(graph)
                 	if answers:
 				if answers['SR'] == isSR and  answers['RC'] == isRC and  answers['ACA'] == isACA and  answers['ST'] == isST:
 					returnString = printCheckboxes(answers) + views.getMessageBox("Richtig!","thumbs-up") + resultString
