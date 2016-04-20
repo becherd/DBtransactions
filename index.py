@@ -253,5 +253,5 @@ try:
 		#just show the results
 		print html(history) + printResults(history) + htmlend
 except KeyError:
-	history = DBtransactions.generateHistory()
+	history = views.historyToString(DBtransactions.generateHistory(), False)
     	print html(history)+printCheckboxes()+htmlend

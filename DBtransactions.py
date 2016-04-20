@@ -32,7 +32,7 @@ class HistoryItem:
 
 def generateHistory():
 	numberOfTransactions = random.randint(2,4)
-	numberOfDataItems = numberOfTransactions - random.randint(0,1)
+	numberOfDataItems = random.randint(2,4) - random.randint(0,1)
 	numberOfOperations = numberOfTransactions*random.randint(0,2)+random.randint(2,3)
 	history = []
 	usedTransactions = set()
@@ -59,7 +59,19 @@ def generateHistory():
 				item = HistoryItem(t,operation,"")
 				history.insert(indexForCommit, item)
 				break
-	return views.historyToString(history, False)
+	#sgenerate new history in some cases to balance it out a bit
+	if isST(operationsNotST(history)) or not isRC(operationsNotRC(history)):
+		if random.randint(0,100) > 50:
+			return generateHistory()
+	if random.randint(0,100) < 15:
+		while isSR(generateGraph(history)) and isACA(operationsNotACA(history)):
+			history = generateHistory()
+	elif random.randint(0,100) < 15:
+		while isSR(generateGraph(history)):
+			history = generateHistory()
+		while not isST(operationsNotST(history)):
+			history = generateHistory()
+	return history
 
 def generateRandomHistoryItem(numberOfTransactions, numberOfDataItems):
 	operations = [READ,WRITE]
