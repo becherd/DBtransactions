@@ -13,10 +13,11 @@ COMMIT="c"
 ABORT="a"
 
 class HistoryItem:
-	def __init__(self, transaction, operation, data=""):
+	def __init__(self, transaction, operation, data="", index=-1):
 		self.transaction = transaction
 		self.operation = operation
 		self.data=data
+		self.index=index
 	def toString(self, html=True):
 		if self.data != "":
 			data = "["+self.data+"]"
@@ -27,7 +28,6 @@ class HistoryItem:
 		else:
 			transaction = self.transaction
 		return self.operation+transaction+data
-
 
 
 def generateHistory():
@@ -75,17 +75,17 @@ def parseInput(string):
 	string = string.replace(" ", "")
 	elements = string.split(",")
 	history = []
-	for e in elements:
+	for i, e in enumerate(elements):
 		if len(e) == 2:
 			#c or a
 			if re.match("^[ac]\d$",e):
-				history.append(HistoryItem(e[1],e[0]))
+				history.append(HistoryItem(e[1],e[0], "", i))
 			else:
 				return views.getMessageBox("Verstehe deine Eingabe "+e+" nicht!", "exclamation-sign")
 		elif len(e) == 5:
 			#w or r
 			if re.match("^[wr]\d[\[\(][a-zA-Z][\]\)]$",e):
-				history.append(HistoryItem(e[1],e[0],e[3]))
+				history.append(HistoryItem(e[1],e[0],e[3], i))
 			else:
 				return views.getMessageBox("Verstehe deine Eingabe "+e+" nicht!", "exclamation-sign")
 		elif re.match("[ac]\d+$",e) or re.match("[wr]\d+[\[\(][a-zA-Z][\]\)]",e):
@@ -115,6 +115,11 @@ def abortedTransactions(history):
         return involvedTransactions(history, ABORT)
 
 
+def getEndOperationOfTA(history, transactionId):
+	for e in history:
+		if e.transaction == transactionId and e.operation in COMMIT+ABORT:
+			return e
+	return history[-1]
 
 def validateInput(history):
 	for i,e in enumerate(history):
@@ -130,11 +135,8 @@ def validateInput(history):
 		return (True, "Alles ok") 
 
 
-def indexOf(history, element):
-	for i,e in enumerate(history):
-		if e is element:
-			return i
-	return -1
+
+
 
 def iReadsFromj(history):
 	readTAs = []
@@ -152,30 +154,48 @@ def iReadsFromj(history):
 
 	
 
-def isRC(history):
+def isRC(operationsNotRC):
+	return not operationsNotRC
+
+
+def operationsNotRC(history):
+	notRC = []
+
 	readTAs = iReadsFromj(history)
 	for t in readTAs:
 		for e in history:
 			if e.operation == COMMIT and e.transaction == t[0].transaction:
 				#reading TA commits
-				return False
+				notRC.append([(t[1], t[0]), (getEndOperationOfTA(history, t[1].transaction), getEndOperationOfTA(history, t[0].transaction))])
+				break
 			elif e.operation == COMMIT and e.transaction == t[1].transaction:
 				#writing TA commits
 				break
-	return True
+	return notRC	
 
 
-def isACA(history):
+def isACA(operationsNotACA):
+        return not operationsNotACA
+
+
+def operationsNotACA(history):
+	notACA = []
+
         readTAs = iReadsFromj(history)
         for t in readTAs:
-                indexOfRead = indexOf(history, t[0])
-                for e in history[indexOfRead:]:
+                for e in history[t[0].index:]:
                         if (e.operation == COMMIT or e.operation == ABORT) and e.transaction == t[1].transaction:
-                                return False
-        return True
+                                notACA.append([(t[1], t[0]), (getEndOperationOfTA(history, t[1].transaction), getEndOperationOfTA(history, t[0].transaction))])
+        return notACA
 
 
-def isST(history):
+def isST(operationsNotST):
+        return not operationsNotST
+
+
+def operationsNotST(history):
+	notST = []
+
 	for i,e in enumerate(history):
 		if e.operation == WRITE:
 			for j,e2 in enumerate(history[i:]):
@@ -187,8 +207,8 @@ def isST(history):
 							commitAbortFound=True
 							break
 					if not commitAbortFound:
-						return False
-	return True
+						notST.append([(e2, e), (getEndOperationOfTA(history, e2.transaction), getEndOperationOfTA(history, e.transaction))])
+	return notST
 
 
 def findConflictOperations(history):
@@ -223,7 +243,11 @@ def generateGraph(history):
 
 def computeEverything(history):
 	graph = generateGraph(history)
-	return {'conflictOperations': findConflictOperations(history), 'committedTAs': committedTransactions(history), 'abortedTAs': abortedTransactions(history), 'readingTAs': iReadsFromj(history), 'graph': graph, 'SR': isSR(graph), 'RC': isRC(history), 'ACA': isACA(history), 'ST': isST(history)}
+	opsNotRC = operationsNotRC(history)
+	opsNotACA = operationsNotACA(history)
+	opsNotST = operationsNotST(history)
+
+	return {'conflictOperations': findConflictOperations(history), 'committedTAs': committedTransactions(history), 'abortedTAs': abortedTransactions(history), 'readingTAs': iReadsFromj(history), 'graph': graph, 'SR': isSR(graph), 'RC': isRC(opsNotRC), 'operationsNotRC': opsNotRC, 'ACA': isACA(opsNotACA), 'operationsNotACA': opsNotACA, 'ST': isST(opsNotST), 'operationsNotST': opsNotST}
 
 def nodesToJson(graph):
 	json = "nodes: ["

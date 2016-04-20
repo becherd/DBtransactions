@@ -151,11 +151,14 @@ def printResults(string, answers={}):
 			abortedTransactions = views.transactionListToString(result['abortedTAs'])
                         graph = result['graph']
                         isSR = result['SR']
-                        isRC = result['RC']
-                        isACA = result['ACA']
-                        isST = result['ST']
+                        operationsNotRC = result['operationsNotRC']
+			isRC = result['RC']
+                        operationsNotACA = result['operationsNotACA']
+			isACA = result['ACA']
+                        operationsNotST = result['operationsNotST']
+			isST = result['ST']
 			
-			resultString =  historyTable+views.wrapInPanel("Konfliktoperationen", conflictOperations,3)+views.wrapInPanel("Lesende TAs", readingTAs, 3)+views.wrapInPanel("Committete Transaktionen", committedTransactions, 3)+views.wrapInPanel("Abortete Transaktionen", abortedTransactions, 3)+views.htmlGraph()+"<div>"+views.wrapInPanel("Eigenschaften von H := "+historyString, views.propertyToString("serialisierbar", isSR)+views.propertyToString("rücksetzbar", isRC)+views.propertyToString("vermeidet kaskadierendes Rücksetzen", isACA)+views.propertyToString("strikt", isST), 12)+"</div>"+printjquery(graph)
+			resultString =  historyTable+views.wrapInPanel("Konfliktoperationen", conflictOperations,3)+views.wrapInPanel("Lesende TAs", readingTAs, 3)+views.wrapInPanel("Committete Transaktionen", committedTransactions, 3)+views.wrapInPanel("Abortete Transaktionen", abortedTransactions, 3)+views.htmlGraph()+"<div>"+views.wrapInPanel("Eigenschaften von H := "+historyString, views.booleanPropertyToString("serialisierbar", isSR)+views.propertyToString("rücksetzbar", history, operationsNotRC)+views.propertyToString("vermeidet kaskadierendes Rücksetzen", history, operationsNotACA)+views.propertyToString("strikt", history, operationsNotST), 12)+"</div>"+printjquery(graph)
                 	if answers:
 				if answers['SR'] == isSR and  answers['RC'] == isRC and  answers['ACA'] == isACA and  answers['ST'] == isST:
 					returnString = printCheckboxes(answers) + views.getMessageBox("Richtig!","thumbs-up") + resultString
@@ -164,7 +167,7 @@ def printResults(string, answers={}):
 			else:
 				returnString = printCheckboxes(result) + resultString
 		else:
-			returnString = printCheckboxes() + history
+			returnString = printCheckboxes(answers) + history
 		return returnString
 
 

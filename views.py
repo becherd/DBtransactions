@@ -17,14 +17,41 @@ def getMessageBox(message, icon="exclamation-sign"):
 		return """<div class="panel-body"><div class="row"><div class="col-md-12"><div class="alert alert-"""+style+"""" role="alert"><span class="glyphicon glyphicon-"""+icon+"""" aria-hidden=""""+icon+""""></span><span class="sr-only">"""+style+"""</span> """+message+"""</div></div></div></div>"""
 
 
-def propertyToString(property, value):
-	if value:
+
+def booleanPropertyToString(property, isFilfilled, valueString=""):
+	if isFilfilled:
 		labeltype = "success"
 		icon = "ok"
 	else:
 		labeltype = "danger"
 		icon = "flash"
-	return """<h1><div class="alert alert-"""+labeltype+"""">"""+property+""" <span class="glyphicon glyphicon-"""+icon+"""" aria-hidden=""""+icon+""""></span></div></h1>"""
+	if valueString:
+		panelBody = """<div class="panel-body">"""+valueString+"""</div>"""
+	else:
+		panelBody=""
+	return """<div class="panel panel-"""+labeltype+""""><div class="panel-heading">"""+property+""" <span class="glyphicon glyphicon-"""+icon+"""" aria-hidden=""""+icon+""""></span></div>""" + panelBody + """</div>"""
+
+
+def propertyToString(property, history=[], operationsNotFulfillProperty=[]):
+	vl=""
+	if not operationsNotFulfillProperty:
+		propertyFulfilled=True
+	else:
+		propertyFulfilled=False
+		for v in operationsNotFulfillProperty:
+			conflictOperations = v[0]
+			endOperations = v[1]
+			markElements = {}
+			for c in conflictOperations:
+				markElements[c.index] = "danger"
+			for e in endOperations:
+				markElements[e.index] = "warning"
+
+			vl = vl+ historyToString(history, True, markElements)+"<br/>"
+
+	returnString = booleanPropertyToString(property, propertyFulfilled, vl)
+	
+	return returnString
 
 
 def htmlGraph():
@@ -32,10 +59,15 @@ def htmlGraph():
 	return wrapInPanel("Serialisierbarkeitsgraph SG(H)",  graphstring, 12)
 
 
-def historyToString(history, html=True):
+def historyToString(history, html=True, markElements={}):
         historyString = ""
         for i,e in enumerate(history):
-                historyString = historyString + e.toString(html)
+		if e.index in markElements:
+			elementString = """<b><span class="text-"""+markElements[e.index]+"""">"""+e.toString(html)+"</span></b>"
+		else:
+			elementString = e.toString(html)
+
+                historyString = historyString + elementString
 		if i < len(history)-1:
 			historyString = historyString + ", "
         return historyString
@@ -78,7 +110,7 @@ def conflictOperationsToString(conflictOperations):
 		return "-"
 	else:
 		operationsString = ""
-		for o in conflictOperations:
+		for o in set(conflictOperations):
 			operationsString = operationsString + o[0].toString() + " &lt; " + o[1].toString() + "<br/>"
 		return operationsString
 
@@ -87,6 +119,6 @@ def readingTAsToString(readingTAs):
 		return "-"
 	else:
 		readingTAstring = ""
-		for ta in readingTAs:
+		for ta in set(readingTAs):
 			readingTAstring = readingTAstring + transactionToString(ta[0].transaction) + " liest von " + transactionToString(ta[1].transaction) + "<br/>"
 		return readingTAstring
