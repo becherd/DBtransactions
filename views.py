@@ -47,7 +47,7 @@ def propertyToString(property, history=[], operationsNotFulfillProperty=[]):
 				markElements[c.index] = "danger"
 			for e in endOperations:
 				markElements[e.index] = "warning"
-			infoString = infoString+ """<div class="list-group-item">""" + historyToString(history, True, markElements) + "</div>"
+			infoString = infoString+ """<div class="list-group-item"> """ + historyToString(history, True, markElements) + "</div>"
 		infoString = infoString + "</div>"
 	returnString = booleanPropertyToString(property, propertyFulfilled, infoString)
 	
@@ -110,8 +110,10 @@ def conflictOperationsToString(conflictOperations):
 		return "-"
 	else:
 		operationsString = ""
-		for o in set(conflictOperations):
-			operationsString = operationsString + o[0].toString() + " &lt; " + o[1].toString() + "<br/>"
+		for o in conflictOperations:
+			addString = o[0].toString() + " &lt; " + o[1].toString() + "<br/>"
+			if addString not in operationsString:
+				operationsString = operationsString + addString
 		return operationsString
 
 def readingTAsToString(readingTAs):
@@ -119,6 +121,8 @@ def readingTAsToString(readingTAs):
 		return "-"
 	else:
 		readingTAstring = ""
-		for ta in set(readingTAs):
-			readingTAstring = readingTAstring + transactionToString(ta[0].transaction) + " liest von " + transactionToString(ta[1].transaction) + "<br/>"
+		for ta in readingTAs:
+			addString = transactionToString(ta[0].transaction) + " liest von " + transactionToString(ta[1].transaction) + "<br/>"
+			if addString not in readingTAstring:
+				readingTAstring = readingTAstring + addString
 		return readingTAstring
