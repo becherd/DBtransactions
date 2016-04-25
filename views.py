@@ -126,3 +126,35 @@ def readingTAsToString(readingTAs):
 			if addString not in readingTAstring:
 				readingTAstring = readingTAstring + addString
 		return readingTAstring
+
+
+def conflictOperationsTooltip(history):
+	conflictOperations = DBtransactions.getConflictOperationsPerEdge(history)
+	returnString = ""
+
+	for id, operations in conflictOperations.iteritems():
+		content = conflictOperationsToString(operations)
+		returnString = returnString + """
+			graph.$('#"""+ id +"""').qtip({
+			  content: '"""+ content +"""',
+			  position: {
+			    my: 'top center',
+			    at: 'bottom center'
+			  },
+			  style: {
+			    classes: 'qtip-bootstrap',
+			    tip: {
+			      width: 16,
+			      height: 8
+			    }
+			  }
+			});
+		"""
+	return returnString
+
+
+
+
+
+
+

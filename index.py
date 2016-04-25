@@ -6,14 +6,18 @@ import DBtransactions
 form = cgi.FieldStorage()
 
 
-def printjquery(graph):
+def printjquery(graph, history):
 	graphJson = DBtransactions.graphToJson(graph)
 	jq = """<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 		<script src="http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.js"></script>
+		<link href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.css" rel="stylesheet" type="text/css" />
+		<script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-qtip/2.2.5/cytoscape-qtip.js"></script>
+		
 		 <script>
 		$(function(){
 		"""
-	jq = jq + graphJson+jsonend
+	jq = jq + graphJson+graphStyle(history)
 	return jq
 
 	
@@ -91,48 +95,52 @@ htmlend="""
 
 
 
-jsonend="""
-$('#graph').cytoscape({
-  style: cytoscape.stylesheet()
-    .selector('node')
-      .css({
-        'background-color': '#2780E3',
-	'color': '#ffffff',
-	'text-outline-width': 2,
-        'text-outline-color': '#2780E3',
-        'shape': 'rectangle',
-        'width': 'mapData(0, 0, 30, 30, 0)',
-        'height': 'mapData(0, 0, 20, 20, 50)',
-        'content': 'data(id)',
-        'text-valign': 'center',
-        'text-halign': 'center'
-      })
-    .selector('edge')
-      .css({
-        'width': 'mapData(0, 0, 10, 5, 9)',
-        'line-color': 'data(color)',
-        'target-arrow-color': 'data(color)',
-        'target-arrow-shape': 'triangle',
-        'opacity': 0.5
-      }),
-  
-  elements: elesJson,
-  
-  layout: {
-    name: 'circle',
-    directed: true,
-    padding: 10
-  },
-  minZoom: 0.5,
-  maxZoom: 2,
-  autoungrabify: false,
-  userPanningEnabled: false,
-  zoomingEnabled: true,
-  userZoomingEnabled: false,
-});
-}); 
-</script>
-"""
+def graphStyle(history):
+	edgeTooltips = views.conflictOperationsTooltip(history)
+	return """
+	var graph = cytoscape({
+	  container: document.getElementById('graph'),
+
+	  style: cytoscape.stylesheet()
+	    .selector('node')
+	      .css({
+		'background-color': '#2780E3',
+		'color': '#ffffff',
+		'text-outline-width': 2,
+		'text-outline-color': '#2780E3',
+		'shape': 'rectangle',
+		'width': 'mapData(0, 0, 30, 30, 0)',
+		'height': 'mapData(0, 0, 20, 20, 50)',
+		'content': 'data(id)',
+		'text-valign': 'center',
+		'text-halign': 'center'
+	      })
+	    .selector('edge')
+	      .css({
+		'width': 'mapData(0, 0, 10, 5, 9)',
+		'line-color': 'data(color)',
+		'target-arrow-color': 'data(color)',
+		'target-arrow-shape': 'triangle',
+		'opacity': 0.5
+	      }),
+	  
+	  elements: elesJson,
+	  
+	  layout: {
+	    name: 'circle',
+	    directed: true,
+	    padding: 10
+	  },
+	  minZoom: 0.5,
+	  maxZoom: 2,
+	  autoungrabify: false,
+	  userPanningEnabled: false,
+	  zoomingEnabled: true,
+	  userZoomingEnabled: false,
+	}); """ + edgeTooltips + """
+	}); 
+	</script>
+	"""
 
 
 
@@ -158,7 +166,7 @@ def printResults(string, answers={}):
                         operationsNotST = result['operationsNotST']
 			isST = result['ST']
 			
-			resultString =  historyTable+views.wrapInPanel("Konfliktoperationen", conflictOperations,3)+views.wrapInPanel("Lesende Transaktionen", readingTAs, 3)+views.wrapInPanel("Committete Transaktionen", committedTransactions, 3)+views.wrapInPanel("Abortete Transaktionen", abortedTransactions, 3)+views.htmlGraph()+"<div>"+views.wrapInPanel("Eigenschaften von H := "+historyString, views.booleanPropertyToString("serialisierbar", isSR)+views.propertyToString("rücksetzbar", history, operationsNotRC)+views.propertyToString("vermeidet kaskadierendes Rücksetzen", history, operationsNotACA)+views.propertyToString("strikt", history, operationsNotST), 12)+"</div>"+printjquery(graph)
+			resultString =  historyTable+views.wrapInPanel("Konfliktoperationen", conflictOperations,3)+views.wrapInPanel("Lesende Transaktionen", readingTAs, 3)+views.wrapInPanel("Committete Transaktionen", committedTransactions, 3)+views.wrapInPanel("Abortete Transaktionen", abortedTransactions, 3)+views.htmlGraph()+"<div>"+views.wrapInPanel("Eigenschaften von H := "+historyString, views.booleanPropertyToString("serialisierbar", isSR)+views.propertyToString("rücksetzbar", history, operationsNotRC)+views.propertyToString("vermeidet kaskadierendes Rücksetzen", history, operationsNotACA)+views.propertyToString("strikt", history, operationsNotST), 12)+"</div>"+printjquery(graph, history)
                 	if answers:
 				if answers['SR'] == isSR and  answers['RC'] == isRC and  answers['ACA'] == isACA and  answers['ST'] == isST:
 					returnString = printCheckboxes(answers) + views.getMessageBox("Richtig!","thumbs-up") + resultString

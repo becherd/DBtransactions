@@ -281,11 +281,32 @@ def edgesToJson(graph):
 				color = """#FF0039"""
 			else:
 				color = """#2780E3"""
-                	json=json+""" { data: { id: 'T"""+ source +"T"+target+"""', source: 'T"""+source+"""', target: 'T"""+target+"""', color: '"""+color+"""' } }"""
+                	json=json+""" { data: { id: '"""+getEdgeId(source, target)+"""', source: 'T"""+source+"""', target: 'T"""+target+"""', color: '"""+color+"""' }}"""
                 	if i < len(graph)-1:
                         	json=json+","
         json=json+"]"
         return json
+
+
+
+def getEdgeId(sourceId, targetId):
+	return "T"+sourceId+"T"+targetId
+
+
+def getConflictOperationsPerEdge(history):
+	conflictOperations = findConflictOperations(history)
+	
+	edges = {}
+
+	for c in conflictOperations:
+		edgeId = getEdgeId(c[0].transaction, c[1].transaction)
+		if edgeId not in edges:
+			edges[edgeId] = [c]
+		else:
+			edges[edgeId].append(c)
+
+	return edges
+
 
 def graphToJson(graph):
 	json = "var elesJson = {" + nodesToJson(graph) + ", " + edgesToJson(graph) + "};"
