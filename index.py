@@ -9,7 +9,7 @@ form = cgi.FieldStorage()
 def printjquery(graph, history):
 	graphJson = DBtransactions.graphToJson(graph)
 	jq = """<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-		<script src="http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
+		<script src="http://home.in.tum.de/~becher/static/js/cytoscape.min.js"></script>
 		<script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.js"></script>
 		<link href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.css" rel="stylesheet" type="text/css" />
 		<script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-qtip/2.2.5/cytoscape-qtip.js"></script>
