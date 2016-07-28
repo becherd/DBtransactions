@@ -155,13 +155,13 @@ def iReadsFromj(history):
 	for i,e in enumerate(history):
 		if e.operation == READ:
 			aborted = set()
-			for e2 in reversed(history[:i]):
-				if e.transaction != e2.transaction:
-					if e2.operation==ABORT:
-						aborted.add(e2.transaction)
-					elif e2.operation==WRITE and e.data==e2.data and e2.transaction not in aborted:
+			for e2 in reversed(history[:i]):	
+				if e2.operation==ABORT:
+					aborted.add(e2.transaction)
+				elif e2.operation==WRITE and e.data==e2.data and e2.transaction not in aborted:
+					if e.transaction != e2.transaction:
 						readTAs.append((e,e2))
-						break
+					break
 	return readTAs
 
 	
