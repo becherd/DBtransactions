@@ -25,7 +25,7 @@ print """
 	<html>
 		<head>
 			<meta charset="utf-8">
-			<title>DBtransactions</title>
+			<title>DB[transactions]</title>
 			<link rel="stylesheet" type="text/css" href="http://home.in.tum.de/~becher/static/css/bootstrapcosmo.min.css" />
 			<script src="http://home.in.tum.de/~becher/static/js/jquery-1.11.3.min.js"></script>
 			<script src="http://home.in.tum.de/~becher/static/js/bootstrap.min.js"></script>
@@ -37,8 +37,7 @@ def html(history):
   	<div class="panel-body">
 		<div class="row">
 			<div class="col-md-6">
-				<h1><big>DB[transactions]</big><sub><small>beta</small></sub></h1>
-			</div>
+"""+views.getHeading()+"""</div>
 			<div class="col-md-6">
 				<p class="text-right"><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#helpModal">
 		 			<span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Hilfe</button>

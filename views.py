@@ -152,7 +152,21 @@ def conflictOperationsTooltip(history):
 		"""
 	return returnString
 
-
+def getHeading():
+	return """<h1><big><a href="index.py" style="text-decoration:none;"><span class="text-muted">DB<span name="bracket" style="display:none;">[</span>transactions<span name="bracket" style="display:none;">]</span></span></a></big></h1>
+                        <script>
+                                var colors=["info", "warning", "primary", "success", "danger"];
+                                var index=0;
+                                function changeBracketColor(){
+                                    if (index == colors.length){
+                                                index=0;
+                                        }
+                                     $('span [name=bracket]').hide().removeClass().addClass("text-"+colors[index]).fadeIn(3000);
+                                     index++;
+                                }
+                                $(document).ready(changeBracketColor());
+                                setInterval(changeBracketColor,10000);
+                        </script>"""
 
 
 
