@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/python
+# -*- coding: utf8 -*-
 import cgi
 import cgitb; cgitb.enable()
 import views
@@ -20,7 +21,8 @@ def printjquery(graph, history):
 	jq = jq + graphJson+graphStyle(history)
 	return jq
 
-	
+
+print "Content-Type: text/html"
 print """
 	<html>
 		<head>
