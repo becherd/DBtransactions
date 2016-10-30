@@ -10,7 +10,7 @@ form = cgi.FieldStorage()
 def printjquery(graph, history):
 	graphJson = DBtransactions.graphToJson(graph)
 	jq = """<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-		<script src="http://home.in.tum.de/~becher/static/js/cytoscape.min.js"></script>
+		<script src="/becher/static/js/cytoscape.min.js"></script>
 		<script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.js"></script>
 		<link href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.css" rel="stylesheet" type="text/css" />
 		<script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-qtip/2.2.5/cytoscape-qtip.js"></script>
@@ -28,9 +28,9 @@ print """
 		<head>
 			<meta charset="utf-8">
 			<title>DB[transactions]</title>
-			<link rel="stylesheet" type="text/css" href="http://home.in.tum.de/~becher/static/css/bootstrapcosmo.min.css" />
-			<script src="http://home.in.tum.de/~becher/static/js/jquery-1.11.3.min.js"></script>
-			<script src="http://home.in.tum.de/~becher/static/js/bootstrap.min.js"></script>
+			<link rel="stylesheet" type="text/css" href="/becher/static/css/bootstrapcosmo.min.css" />
+			<script src="/becher/static/js/jquery-1.11.3.min.js"></script>
+			<script src="/becher/static/js/bootstrap.min.js"></script>
 		</head>"""
 
 def html(history):
