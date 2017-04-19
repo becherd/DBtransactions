@@ -55,8 +55,8 @@ def propertyToString(property, history=[], operationsNotFulfillProperty=[]):
 
 
 def htmlGraph():
-	graphstring =  """<div id="graph" style="height: 400px; width: 100%; left: 0; background-color: #EDF1FA; border-top: 1px solid #ccc;"></div><br/>"""
-	return wrapInPanel("Serialisierbarkeitsgraph SG(H)",  graphstring, 12)
+	graphstring =  """<div id="graph" style="height: 400px; width: 100%; left: 0; background-color: #EDF1FA; border-top: 1px solid #ccc;"></div>"""
+	return wrapInPanel("Serialisierbarkeitsgraph SG(H)",  graphstring + "<h6><small><span class=\"glyphicon glyphicon-info-sign\" aria-hidden=\"true\"></span> Ein Klick auf eine Kante des Serialisierbarkeitsgraphen zeigt die Konfliktoperationen, die zu dieser Kante führen.</small></h6>", 12)
 
 
 def historyToString(history, html=True, markElements={}):
